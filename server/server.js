@@ -16,7 +16,7 @@ var app = express();
 app.use(bodyParser.json());
 
 
-// Route todos
+// Route post todos
 app.post('/todos',(req,res) =>{
   var todo = new Todos({
     text : req.body.text,
@@ -29,13 +29,13 @@ app.post('/todos',(req,res) =>{
   })
 });
 
-// Route user
+// Route post user
 app.post('/user',(req,res) => {
   var user = new User({
     email : req.body.email
   })
   user.save().then((doc) =>{
-    res.send(doc)
+    res.json(doc)
   },(err) =>{
     res.status(400).send(err);
   })
@@ -44,4 +44,12 @@ app.listen(3000,() => {
   console.log('start server on port 3000');
 })
 
+// Route get todos
+app.get('/todos',(req,res) => {
+  Todos.find().then((Todos) =>{
+    res.json({Todos})
+  },(e) => {
+    res.status(400).send(e);
+  })
+})
 module.exports = {app};
