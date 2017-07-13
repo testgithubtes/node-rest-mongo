@@ -9,9 +9,7 @@ var {User} = require ('./models/users')
 var app = express();
 
 
-// app.get('/todos',(req,res) =>{
-//
-// });
+
 
 app.use(bodyParser.json());
 
@@ -40,9 +38,7 @@ app.post('/user',(req,res) => {
     res.status(400).send(err);
   })
 })
-app.listen(3000,() => {
-  console.log('start server on port 3000');
-})
+
 
 // Route get todos
 app.get('/todos',(req,res) => {
@@ -50,6 +46,11 @@ app.get('/todos',(req,res) => {
     res.json({Todos})
   },(e) => {
     res.status(400).send(e);
-  })
-})
+  });
+});
+
+app.listen(3000,() => {
+  console.log('start server on port 3000');
+});
+
 module.exports = {app};
