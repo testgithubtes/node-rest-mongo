@@ -1,5 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var { ObjectID } = require('mongodb');
 
 var { mongoose } = require('./db/mongoose');
 var { Todos } = require('./models/todos');
@@ -45,6 +46,24 @@ app.get('/todos', (req, res) => {
 
 app.listen(3000, () => {
   console.log('start server on port 3000');
+});
+
+// Get One todos
+app.get('/todos/:id', (req, res) => {
+  var id = req.params.id;
+  if (!ObjectID.isValid(id)) {
+    res.status(404).send('id not valid');
+  }
+
+  Todos.findById(id).then((Todos) => {
+    if (!Todos) {
+      return res.status(404).send('id is empty');
+    }
+
+    res.json({ Todos });
+  }).catch((e) => {
+    res.status(400).send('Unable to fetch from db');
+  });
 });
 
 module.exports = { app };
