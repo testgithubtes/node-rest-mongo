@@ -7,6 +7,7 @@ var { Todos } = require('./models/todos');
 var { User } = require('./models/users');
 
 var app = express();
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
@@ -44,10 +45,6 @@ app.get('/todos', (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log('start server on port 3000');
-});
-
 // Get One todos
 app.get('/todos/:id', (req, res) => {
   var id = req.params.id;
@@ -64,6 +61,9 @@ app.get('/todos/:id', (req, res) => {
   }).catch((e) => {
     res.status(400).send('Unable to fetch from db');
   });
+});
+app.listen(port, () => {
+  console.log(`Started server on ${port}`);
 });
 
 module.exports = { app };
