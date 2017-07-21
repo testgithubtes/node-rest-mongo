@@ -45,7 +45,7 @@ app.get('/todos', (req, res) => {
   });
 });
 
-// Get One todos
+// Route Get One todos
 app.get('/todos/:id', (req, res) => {
   var id = req.params.id;
   if (!ObjectID.isValid(id)) {
@@ -60,6 +60,28 @@ app.get('/todos/:id', (req, res) => {
     res.json({ Todos });
   }).catch((e) => {
     res.status(400).send('Unable to fetch from db');
+  });
+});
+
+// Route detele One todos
+app.delete('/todos/:id', (req, res) => {
+  // Get the id
+  var id = req.params.id;
+
+  // Validate the id
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send('id not valid');
+  }
+
+  //Remove todo by Id
+  Todos.findByIdAndRemove(id).then((Todos) => {
+    if (!Todos) {
+      return res.status(404).send('id is already empty');
+    }
+
+    res.json(Todos);
+  }).catch((e) => {
+    res.status(400).send('Unable to delete from db');
   });
 });
 app.listen(port, () => {
