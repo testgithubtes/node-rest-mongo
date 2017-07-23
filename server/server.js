@@ -79,7 +79,7 @@ app.delete('/todos/:id', (req, res) => {
       return res.status(404).send('id is already empty');
     }
 
-    res.json(Todos);
+    res.json({ Todos });
   }).catch((e) => {
     res.status(400).send('Unable to delete from db');
   });
