@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://sr:rs@ds115573.mlab.com:15573/todoapp' ||
-'mongodb://localhost:27017/todoapp', {
+mongoose.connect(
+process.env.MONGODB_URI, {
   useMongoClient: true,
   /* other options */
 });
