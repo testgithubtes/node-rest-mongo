@@ -1,4 +1,5 @@
-require('./config/config.js');
+require('.././config/config');
+
 const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -28,12 +29,15 @@ app.post('/todos', (req, res) => {
 
 // Route post user
 app.post('/user', (req, res) => {
-  var user = new User({
-    email: req.body.email,
-  });
-  user.save().then((doc) => {
-    res.json(doc);
-  }, (err) => {
+  var body = _.pick(req.body, ['email', 'password']);
+  var user = new User(body);
+  user.save().then(() => {
+    return user.generateAuthToken();
+
+    // res.json(user);
+  }).then((token) => {
+    res.header('x-auth', token).send(user);
+  }).catch((err) => {
     res.status(400).send(err);
   });
 });
