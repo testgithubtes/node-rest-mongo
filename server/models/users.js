@@ -11,6 +11,7 @@ var UserSchema = new mongoose.Schema({
     minlength: 1,
     unique: true,
     validate: {
+      isAsync: false,
       validator: validator.isEmail,
       message: '{VALUE} is not valid',
     },
@@ -41,10 +42,28 @@ UserSchema.methods.toJSON = function () {
 UserSchema.methods.generateAuthToken = function () {
   var user = this;
   var access = 'auth';
-  var token = jwt.sign({ _id: user._id.toHexString, access }, 'azed');
+  var token = jwt.sign({ _id: user._id.toHexString(), access }, 'azed');
   user.tokens.push({ access, token });
   return user.save().then(() => {
     return token;
+  });
+};
+
+UserSchema.statics.findByToken = function (token) {
+  var User = this;
+  var decode;
+  try {
+    decode = jwt.verify(token, 'azed');
+  } catch (e) {
+    return new Promise((resolve, reject) => {
+      reject();
+    });
+  }
+
+  return User.findOne({
+    '_id': decode._id,
+    'tokens.token': token,
+    'tokens.access': 'auth',
   });
 };
 

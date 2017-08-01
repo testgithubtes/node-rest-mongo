@@ -8,6 +8,7 @@ var { ObjectID } = require('mongodb');
 var { mongoose } = require('./db/mongoose');
 var { Todos } = require('./models/todos');
 var { User } = require('./models/users');
+var { authentication } = require('./middleware/authenticate.js');
 
 var app = express();
 const port = process.env.PORT;
@@ -27,8 +28,8 @@ app.post('/todos', (req, res) => {
   });
 });
 
-// Route post user
-app.post('/user', (req, res) => {
+// Route post users
+app.post('/users', (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);
   var user = new User(body);
   user.save().then(() => {
@@ -118,6 +119,12 @@ app.patch('/todos/:id', (req, res) => {
     res.status(400).send();
   });
 });
+
+// Test private Route
+app.get('/users/me', authentication, (req, res) => {
+  res.send(req.user);
+});
+
 app.listen(port, () => {
   console.log(`Started server on ${port}`);
 });
